@@ -1,0 +1,4 @@
+const ForumPage = ({ forums, onNavigate }) => ( <div> <h2 className="text-3xl font-bold text-gray-800 mb-8">Discussion Forums</h2> <div className="bg-white p-6 rounded-xl shadow-lg"> <div className="flex justify-end mb-4"> <button onClick={() => onNavigate('AddForumPost')} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Start New Discussion</button> </div> <ul className="space-y-4"> {forums.map(forum => ( <li key={forum.id} className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer" onClick={() => onNavigate('ForumThread', { threadId: forum.id, title: forum.title })}> <h3 className="font-bold text-lg text-indigo-700">{forum.title}</h3> <p className="text-sm text-gray-600 mt-1">{forum.question}</p> <p className="text-xs text-gray-400 mt-2">Started by {forum.author || 'Anonymous'}</p> </li> ))} </ul> </div> </div> );
+
+
+export default ForumPage;

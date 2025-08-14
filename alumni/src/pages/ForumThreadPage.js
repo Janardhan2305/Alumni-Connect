@@ -1,0 +1,8 @@
+import { useEffect } from "react";
+import {  collection, onSnapshot, addDoc, query, where, serverTimestamp } from "firebase/firestore";
+import {useState} from 'react';
+
+const ForumThreadPage = ({ threadId, title, db, userRole }) => { const [replies, setReplies] = useState([]); const [newReply, setNewReply] = useState(''); useEffect(() => { if (!threadId) return; const q = query(collection(db, "forum-replies"), where("threadId", "==", threadId)); const unsubscribe = onSnapshot(q, (snapshot) => { setReplies(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))); }); return () => unsubscribe(); }, [threadId, db]); const handleReplySubmit = async (e) => { e.preventDefault(); if (newReply.trim() === '') return; await addDoc(collection(db, "forum-replies"), { threadId: threadId, text: newReply, author: userRole, createdAt: serverTimestamp() }); setNewReply(''); }; return ( <div> <h2 className="text-3xl font-bold text-gray-800 mb-4">{title}</h2> <div className="bg-white p-6 rounded-xl shadow-lg mb-6"> {replies.map(reply => ( <div key={reply.id} className="border-b py-4"> <p className="text-gray-800">{reply.text}</p> <p className="text-xs text-gray-500 mt-2 capitalize">By {reply.author} </p> </div> ))} </div> <div className="bg-white p-6 rounded-xl shadow-lg"> <h3 className="text-xl font-semibold mb-4">Add Your Reply</h3> <form onSubmit={handleReplySubmit}> <textarea value={newReply} onChange={(e) => setNewReply(e.target.value)} className="w-full p-2 border rounded-md" rows="4" placeholder="Type your reply..."></textarea> <button type="submit" className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Post Reply</button> </form> </div> </div> ); };
+
+
+export default ForumThreadPage;
